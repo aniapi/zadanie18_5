@@ -1,54 +1,42 @@
-const path = require('path');
-
+var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-// var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-// var OptimizeJsPlugin = require('optimize-js-plugin');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var OptimizeJsPlugin = require('optimize-js-plugin');
 
-const plugins = 
-    [new HtmlWebpackPlugin({
-        template: 'client/index.html',
-        filename: 'index.html',
-        inject: 'body',
-        })
-    // new webpack.optimize.UglifyJsPlugin(),
-    // new OptimizeJsPlugin({
-    //     sourceMap: false
-    // })
-    ];
+var env = process.env.NODE_ENV || 'development';
 
 module.exports = {
     entry: './client/index.js',
-        output: {
+    output: {
         path: path.resolve(__dirname, 'public'),
-        filename: 'app.bundle.js'
+        filename: 'bundle.js',
+        
     },
     module: {
-        rules: [
-        {
-            test: /\.js$/,
-            loader: "babel-loader"
-        },
-        {
-            test: /\.css$/,
-            use: [
-                { loader: 'style-loader'},
-                {
-                    loader: 'css-loader',
-                    options: {
-                        modules: true
+        rules: [{
+                test: /\.js$/,
+                exclude: /(node_modules)/,
+                loader: "babel-loader",
+                
+
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    { loader: 'style-loader' },
+                    {loader: 'react-hot-loader/webpack'},
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true
+                        }
                     }
-                }
-            ]
-        }
+                    
+                ]
+            }
         ]
     },
-    devServer: {
-        proxy: {
-            '/socket.io': {
-                target: 'http://localhost:3000',
-                ws: true
-            }
-        }
-    }
-};
+
+
+}
